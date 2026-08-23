@@ -18,7 +18,8 @@ import {
   Layers,
   Globe,
   Scale,
-  UserCheck
+  UserCheck,
+  Mail
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -26,7 +27,7 @@ interface HeaderProps {
   onTabChange: (tab: string) => void;
   activeAlertCount?: number;
   onOpenChat?: () => void;
-  onOpenLegalCenter?: (tab?: 'terms' | 'privacy' | 'age' | 'license' | 'developer') => void;
+  onOpenLegalCenter?: (tab?: 'terms' | 'privacy' | 'age' | 'license' | 'developer' | 'contact') => void;
   isAgeVerified?: boolean;
 }
 
@@ -83,13 +84,23 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
           {onOpenLegalCenter && (
-            <button
-              onClick={() => onOpenLegalCenter('terms')}
-              className="flex items-center gap-1 bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px] transition-colors"
-            >
-              <Scale className="w-3 h-3 text-emerald-400" />
-              <span>Termos & Licença MIT</span>
-            </button>
+            <>
+              <button
+                onClick={() => onOpenLegalCenter('contact')}
+                className="flex items-center gap-1.5 bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 hover:text-emerald-200 px-2.5 py-0.5 rounded-full border border-emerald-700/60 text-[11px] font-semibold transition-all shadow-sm"
+              >
+                <Mail className="w-3 h-3 text-emerald-400" />
+                <span>Contato</span>
+              </button>
+
+              <button
+                onClick={() => onOpenLegalCenter('terms')}
+                className="flex items-center gap-1 bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px] transition-colors"
+              >
+                <Scale className="w-3 h-3 text-slate-400" />
+                <span>Termos & Licença MIT</span>
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -154,6 +165,16 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <Bot className="w-3.5 h-3.5" />
                 <span>Advisor IA</span>
+              </button>
+            )}
+
+            {onOpenLegalCenter && (
+              <button
+                onClick={() => onOpenLegalCenter('contact')}
+                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
+              >
+                <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Contato</span>
               </button>
             )}
           </div>

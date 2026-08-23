@@ -24,9 +24,10 @@ import { ADVISOR_KNOWLEDGE_BASE, AdvisorEntry, searchAdvisorKnowledge } from '..
 
 interface TacticalAdvisorChatProps {
   onClose?: () => void;
+  initialPrompt?: string;
 }
 
-export const TacticalAdvisorChat: React.FC<TacticalAdvisorChatProps> = ({ onClose }) => {
+export const TacticalAdvisorChat: React.FC<TacticalAdvisorChatProps> = ({ onClose, initialPrompt }) => {
   const [activeTab, setActiveTab] = useState<'chat' | 'knowledge'>('chat');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,6 +45,14 @@ export const TacticalAdvisorChat: React.FC<TacticalAdvisorChatProps> = ({ onClos
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const initialPromptSent = useRef(false);
+
+  useEffect(() => {
+    if (initialPrompt && !initialPromptSent.current) {
+      initialPromptSent.current = true;
+      handleSend(initialPrompt);
+    }
+  }, [initialPrompt]);
 
   const quickPrompts = [
     'O que fazer se a pista do Salgado Filho (SBPA) ameaçar alagar?',

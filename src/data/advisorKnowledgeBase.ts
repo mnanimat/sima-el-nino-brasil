@@ -856,6 +856,22 @@ export const ADVISOR_KNOWLEDGE_BASE: AdvisorEntry[] = [
     question: 'Qual a importância de um Relatório Pós-Ação (Lições Aprendidas) após a passagem do El Niño?',
     answer: 'O Relatório Pós-Ação documenta os acertos operacionais, os pontos de falha nos canais de comunicação, os custos reais incorridos e a precisão dos modelos de previsão, permitindo calibrar os limiares de alarme para os próximos ciclos climáticos e atualizar o PLANCON municipal.',
     tags: ['Lições Aprendidas', 'Pós-Ação', 'Melhoria Contínua', 'Calibração', 'Planejamento']
+  },
+  {
+    id: 'info-01',
+    category: 'civil_defense',
+    categoryLabel: 'Contato & Informações',
+    question: 'Qual é o e-mail oficial para contato, dúvidas técnicas, perguntas e parcerias do SIMA El Niño Brasil?',
+    answer: 'Para entrar em contato com o desenvolvedor Micael Nildo Oliveira Souza, enviar perguntas/dúvidas técnicas sobre os modelos matemáticos e simulações do satélite SIMA-SAT 1, propor parcerias institucionais/comerciais ou sugerir melhorias na plataforma, utilize o e-mail oficial: micaelnildo@mnanimat.xyz.',
+    tags: ['Contato', 'E-mail', 'Parcerias', 'Dúvidas', 'Perguntas', 'Micael Nildo', 'Suporte']
+  },
+  {
+    id: 'info-02',
+    category: 'civil_defense',
+    categoryLabel: 'Contato & Informações',
+    question: 'Como propor parcerias institucionais com órgãos governamentais, universidades ou concessionárias de transporte?',
+    answer: 'Instituições governamentais (Defesa Civil, CEMADEN, DNIT, DECEA, prefeituras), concessionárias de aeroportos e rodovias, e centros acadêmicos podem enviar propostas de cooperação técnica e acadêmica diretamente para micaelnildo@mnanimat.xyz com o assunto "Proposta de Parceria - SIMA El Niño".',
+    tags: ['Parcerias', 'Institucional', 'Universidades', 'Concessionárias', 'Cooperação', 'E-mail']
   }
 ];
 

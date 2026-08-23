@@ -183,3 +183,23 @@ export interface ChatMessage {
   text: string;
   timestamp: string;
 }
+
+export interface NewsGroundingSource {
+  title?: string;
+  url: string;
+}
+
+export interface EmergencyNewsItem {
+  id: string;
+  title: string;
+  summary: string;
+  source: string;
+  sourceUrl?: string;
+  publishedTime: string;
+  region: RegionId | 'nacional';
+  sector: 'aviation' | 'housing' | 'transport' | 'meteorologia' | 'defesa_civil' | 'geral';
+  severity: 'critico' | 'alto' | 'moderado' | 'informativo';
+  impactTag?: string;
+  isRealTimeGoogleSearch?: boolean;
+  groundingSources?: NewsGroundingSource[];
+}
