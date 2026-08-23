@@ -1,0 +1,6 @@
+{
+  "name": "SIMA El Niño Brasil",
+  "description": "Sistema Integrado de Mitigação, Alerta Antecipado e Resiliência para Aviação, Moradias e Transporte durante eventos do El Niño no Brasil.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

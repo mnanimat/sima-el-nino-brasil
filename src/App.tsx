@@ -1,0 +1,413 @@
+import React, { useState } from 'react';
+import { 
+  Plane, 
+  Home, 
+  Truck, 
+  Activity, 
+  Sparkles, 
+  ShieldCheck, 
+  AlertTriangle, 
+  ArrowRight,
+  TrendingDown,
+  Layers,
+  FileText,
+  Radio,
+  BarChart3,
+  Bot,
+  Satellite,
+  Orbit
+} from 'lucide-react';
+import { Header } from './components/Header';
+import { BrazilMap } from './components/BrazilMap';
+import { AviationModule } from './components/AviationModule';
+import { HousingModule } from './components/HousingModule';
+import { TransportModule } from './components/TransportModule';
+import { ScenarioSimulator } from './components/ScenarioSimulator';
+import { PlanconAiGenerator } from './components/PlanconAiGenerator';
+import { PreventionMeasuresCatalog } from './components/PreventionMeasuresCatalog';
+import { AlertsManager } from './components/AlertsManager';
+import { TacticalAdvisorChat } from './components/TacticalAdvisorChat';
+import { SatelliteMissionModule } from './components/SatelliteMissionModule';
+import { ComprehensiveChartsModule } from './components/ComprehensiveChartsModule';
+import { ACTIVE_ALERTS, MACRO_SUMMARY, SIMA_SAT_TELEMETRY } from './data/mockElNinoData';
+import { SectorType, RegionId, Hotspot } from './types';
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState<string>('all');
+  const [selectedRegion, setSelectedRegion] = useState<RegionId | null>('sul');
+  const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Pre-fill state for PLANCON generator when triggered from other tabs
+  const [planconConfig, setPlanconConfig] = useState({
+    sector: 'Aviação',
+    region: 'Região Sul',
+    location: 'Aeroporto Internacional Salgado Filho (SBPA)',
+  });
+
+  const handleTriggerPlancon = (sector: string, region: string, location: string) => {
+    setPlanconConfig({ sector, region, location });
+    setActiveTab('plancon');
+  };
+
+  const handleHotspotSelect = (hotspot: Hotspot | null) => {
+    setSelectedHotspot(hotspot);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+      {/* Persistent Navigation Header */}
+      <Header
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        activeAlertCount={ACTIVE_ALERTS.length}
+        onOpenChat={() => setIsChatOpen(true)}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+        
+        {/* TAB: ALL (Macro Executive Overview) */}
+        {activeTab === 'all' && (
+          <div className="space-y-8">
+            
+            {/* Executive Status Banner */}
+            <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+              <div className="absolute right-0 top-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+                <div className="space-y-2 max-w-3xl">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                      BOLETIM OPERACIONAL EL NIÑO 2024–2026
+                    </span>
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                      <Satellite className="w-3.5 h-3.5" />
+                      SIMA-SAT 1 EM ÓRBITA HELIOSÍNCRONA (560 KM)
+                    </span>
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      PREVENÇÃO ATIVA
+                    </span>
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    Prevenção de Colapsos na Aviação, Moradias e Transporte
+                  </h1>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Plataforma nacional de engenharia, contingência preditiva e vigilância radar orbital para mitigar secas na Amazônia, inundações no Sul e deslizamentos no Sudeste durante o El Niño.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <button
+                    onClick={() => setActiveTab('satellite')}
+                    className="px-4 py-2.5 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-cyan-950/50 active:scale-95"
+                  >
+                    <Satellite className="w-4 h-4" />
+                    <span>Satélite SIMA-SAT 1</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab('charts')}
+                    className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-950/50 active:scale-95"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    <span>Gráficos & Telemetria</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsChatOpen(true)}
+                    className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-emerald-950/50 active:scale-95"
+                  >
+                    <Bot className="w-4 h-4" />
+                    <span>SIMA Advisor IA</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Macro Key Metrics */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-800">
+                <div className="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800">
+                  <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                    <Plane className="w-3.5 h-3.5 text-sky-400" /> Pistas Sob Proteção
+                  </div>
+                  <div className="text-xl font-bold text-sky-400 mt-1">{MACRO_SUMMARY.protectedAirports} aeródromos</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">Diques e hubs alternantes</div>
+                </div>
+
+                <div className="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800">
+                  <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                    <Home className="w-3.5 h-3.5 text-amber-400" /> Moradias Geomonitoradas
+                  </div>
+                  <div className="text-xl font-bold text-amber-400 mt-1">
+                    {(MACRO_SUMMARY.monitoredSlopesFamilies / 1000).toFixed(0)} mil famílias
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">Alertas via Cell Broadcast</div>
+                </div>
+
+                <div className="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800">
+                  <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                    <Truck className="w-3.5 h-3.5 text-emerald-400" /> Corredores Logísticos
+                  </div>
+                  <div className="text-xl font-bold text-emerald-400 mt-1">
+                    {(MACRO_SUMMARY.protectedCorridorKm / 1000).toFixed(1)} mil km
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">Dragagem e sensores IoT</div>
+                </div>
+
+                <div className="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800">
+                  <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" /> Prejuízos Evitados (Est.)
+                  </div>
+                  <div className="text-xl font-bold text-emerald-300 mt-1">
+                    R$ {MACRO_SUMMARY.estimatedSavingsBillions} Bi
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">Retorno econômico direto</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Satellite Live Card Highlight on Main Page */}
+            <div className="bg-gradient-to-r from-cyan-950/60 via-slate-900 to-slate-900 border border-cyan-800/40 rounded-3xl p-5 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                  <Satellite className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-cyan-300 flex items-center gap-2">
+                    <span>Satélite Dedicado SIMA-SAT 1 em Operação</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-0.5">
+                    Órbita Polar a 560 km • Varredura SAR Banda-L em andamento na Bacia do Guaíba e Rio Madeira • Downlink contínuo com Estação Cuiabá (INPE).
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setActiveTab('satellite')}
+                className="px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow whitespace-nowrap active:scale-95"
+              >
+                <span>Painel de Telemetria Orbital</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Interactive Brazil Map & Regional Telemetry */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-emerald-400" />
+                    Monitoramento Geoespacial de Riscos El Niño
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Selecione uma região geográfica ou um ponto crítico no mapa para inspecionar diagnósticos e contingências.
+                  </p>
+                </div>
+              </div>
+
+              <BrazilMap
+                activeSector="all"
+                selectedRegion={selectedRegion}
+                onSelectRegion={setSelectedRegion}
+                selectedHotspot={selectedHotspot}
+                onSelectHotspot={handleHotspotSelect}
+                onGeneratePlan={(sec, reg, loc) => handleTriggerPlancon(sec, reg, loc)}
+              />
+            </div>
+
+            {/* 3 Pillar Strategic Cards */}
+            <div className="space-y-4">
+              <div className="border-b border-slate-800 pb-2">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                  Pilares de Resiliência Setorial
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Acesse as soluções de engenharia dedicadas a cada setor crítico nacional.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* Pillar 1: Aviação */}
+                <div 
+                  onClick={() => setActiveTab('aviation')}
+                  className="bg-slate-900 border border-slate-800 hover:border-sky-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-110 transition-transform">
+                      <Plane className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">
+                        Setor Aeronáutico
+                      </span>
+                      <h3 className="text-base font-bold text-white mt-1 group-hover:text-sky-300 transition-colors">
+                        Aviação & Aeródromos Resilientes
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                        Blindagem contra inundações de pistas (diques cota +6m), detecção Doppler de windshear e homologação de bases alternativas (Canoas/Viracopos/Boa Vista).
+                      </p>
+                    </div>
+
+                    <div className="space-y-1.5 pt-2 text-[11px] text-slate-400">
+                      <div>• Drenagem e comportas no Salgado Filho (SBPA)</div>
+                      <div>• Protocolos IFR para fumaça na Amazônia (SBEG)</div>
+                      <div>• Radar de aproximação na TMA-SP (SBGR/SBSP)</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-sky-400 group-hover:text-sky-300">
+                    <span>Acessar Módulo da Aviação</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                {/* Pillar 2: Moradias */}
+                <div 
+                  onClick={() => setActiveTab('housing')}
+                  className="bg-slate-900 border border-slate-800 hover:border-amber-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                      <Home className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
+                        Setor Habitacional
+                      </span>
+                      <h3 className="text-base font-bold text-white mt-1 group-hover:text-amber-300 transition-colors">
+                        Moradias & Proteção de Encostas
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                        Evacuação antecipada compulsória via Cell Broadcast (sirene no celular), bioengenharia com capim-vetiver e bacias de amortecimento contra inundações.
+                      </p>
+                    </div>
+
+                    <div className="space-y-1.5 pt-2 text-[11px] text-slate-400">
+                      <div>• Drenos DHP e redes de aço na Serra do Mar e Petrópolis</div>
+                      <div>• Monitoramento de saturação do solo via CEMADEN</div>
+                      <div>• Rede de abrigos em cotas seguras e reassentamento</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-amber-400 group-hover:text-amber-300">
+                    <span>Acessar Módulo de Moradias</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                {/* Pillar 3: Transporte */}
+                <div 
+                  onClick={() => setActiveTab('transport')}
+                  className="bg-slate-900 border border-slate-800 hover:border-emerald-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                      <Truck className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                        Setor Logístico
+                      </span>
+                      <h3 className="text-base font-bold text-white mt-1 group-hover:text-emerald-300 transition-colors">
+                        Transporte & Corredores Nacionais
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                        Dragagem preditiva de passos rochosos em rios amazônicos (Madeira/Solimões), sensores IoT em pontes rodoviárias e kits de transposição do Exército.
+                      </p>
+                    </div>
+
+                    <div className="space-y-1.5 pt-2 text-[11px] text-slate-400">
+                      <div>• Batimetria contínua e fracionamento de barcaças</div>
+                      <div>• Inclinômetros na BR-116 e BR-101 Sul</div>
+                      <div>• Ativação de cabotagem e rotas intermodais de desvio</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-emerald-400 group-hover:text-emerald-300">
+                    <span>Acessar Módulo de Transporte</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* TAB: SATELLITE (SIMA-SAT 1) */}
+        {activeTab === 'satellite' && (
+          <SatelliteMissionModule 
+            onSelectRegion={setSelectedRegion}
+            onGeneratePlan={handleTriggerPlancon}
+          />
+        )}
+
+        {/* TAB: CHARTS & TELEMETRY */}
+        {activeTab === 'charts' && (
+          <ComprehensiveChartsModule />
+        )}
+
+        {/* TAB: AVIATION */}
+        {activeTab === 'aviation' && (
+          <AviationModule onGeneratePlan={handleTriggerPlancon} />
+        )}
+
+        {/* TAB: HOUSING */}
+        {activeTab === 'housing' && (
+          <HousingModule onGeneratePlan={handleTriggerPlancon} />
+        )}
+
+        {/* TAB: TRANSPORT */}
+        {activeTab === 'transport' && (
+          <TransportModule onGeneratePlan={handleTriggerPlancon} />
+        )}
+
+        {/* TAB: SIMULATOR */}
+        {activeTab === 'simulator' && <ScenarioSimulator />}
+
+        {/* TAB: PLANCON AI */}
+        {activeTab === 'plancon' && (
+          <PlanconAiGenerator
+            initialSector={planconConfig.sector}
+            initialRegion={planconConfig.region}
+            initialLocation={planconConfig.location}
+          />
+        )}
+
+        {/* TAB: CATALOG */}
+        {activeTab === 'catalog' && <PreventionMeasuresCatalog />}
+
+        {/* TAB: ALERTS */}
+        {activeTab === 'alerts' && <AlertsManager />}
+
+      </main>
+
+      {/* Floating Tactical Advisor Chat Modal / Drawer */}
+      {isChatOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl">
+            <TacticalAdvisorChat onClose={() => setIsChatOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Satellite className="w-4 h-4 text-cyan-400" />
+            <strong>SIMA El Niño Brasil</strong> — Sistema Integrado de Mitigação & Resiliência
+          </div>
+          <div className="text-[11px] text-slate-400">
+            DECEA • ANAC • CEMADEN • DEFESA CIVIL • DNIT • INPE • MINISTÉRIO DOS TRANSPORTES
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
