@@ -10,8 +10,10 @@ import {
   Layers,
   CheckCircle2,
   Navigation,
-  Compass
+  Compass,
+  FileDown
 } from 'lucide-react';
+import { generateTransportPDFReport } from '../utils/pdfReportGenerator';
 
 interface TransportModuleProps {
   onGeneratePlan: (sector: string, region: string, location: string) => void;
@@ -90,13 +92,36 @@ export const TransportModule: React.FC<TransportModuleProps> = ({ onGeneratePlan
             </div>
           </div>
 
-          <button
-            onClick={() => onGeneratePlan('Transporte e Logística', 'Nacional', current.name)}
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-emerald-950/40 active:scale-95 whitespace-nowrap"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>Gerar Plano Logístico IA</span>
-          </button>
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => {
+                generateTransportPDFReport({
+                  id: selectedCorridor,
+                  name: current.name,
+                  mode: current.mode,
+                  threat: current.threat,
+                  status: current.status,
+                  criticalKm: current.criticalKm,
+                  activeDredges: current.activeDredges,
+                  alternativeRoute: current.alternativeRoute,
+                  flowImpact: current.flowImpact,
+                });
+              }}
+              className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 hover:text-white border border-emerald-500/30 text-xs font-bold flex items-center gap-2 transition-all active:scale-95 whitespace-nowrap shadow-sm"
+              title="Baixar Relatório Técnico de Logística em PDF"
+            >
+              <FileDown className="w-4 h-4 text-emerald-400" />
+              <span>Exportar Relatório PDF</span>
+            </button>
+
+            <button
+              onClick={() => onGeneratePlan('Transporte e Logística', 'Nacional', current.name)}
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-emerald-950/40 active:scale-95 whitespace-nowrap"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Gerar Plano Logístico IA</span>
+            </button>
+          </div>
         </div>
       </div>
 

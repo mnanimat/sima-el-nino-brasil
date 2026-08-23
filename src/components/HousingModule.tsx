@@ -11,8 +11,10 @@ import {
   CheckCircle2,
   Users,
   MapPin,
-  ArrowUpRight
+  ArrowUpRight,
+  FileDown
 } from 'lucide-react';
+import { generateHousingPDFReport } from '../utils/pdfReportGenerator';
 
 interface HousingModuleProps {
   onGeneratePlan: (sector: string, region: string, location: string) => void;
@@ -96,13 +98,35 @@ export const HousingModule: React.FC<HousingModuleProps> = ({ onGeneratePlan }) 
             </div>
           </div>
 
-          <button
-            onClick={() => onGeneratePlan('Moradias e Encostas', 'Nacional', currentZone.name)}
-            className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-amber-950/40 active:scale-95 whitespace-nowrap"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>Gerar Protocolo Habitacional IA</span>
-          </button>
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => {
+                generateHousingPDFReport({
+                  id: selectedSlopeRisk,
+                  name: currentZone.name,
+                  threat: currentZone.threat,
+                  familiesAtRisk: currentZone.familiesAtRisk,
+                  currentRain72h: currentZone.currentRain72h,
+                  slopeStatus: currentZone.slopeStatus,
+                  sirensTested: currentZone.sirensTested,
+                  shelterCapacity: currentZone.shelterCapacity,
+                });
+              }}
+              className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white border border-amber-500/30 text-xs font-bold flex items-center gap-2 transition-all active:scale-95 whitespace-nowrap shadow-sm"
+              title="Baixar Relatório Técnico de Encostas em PDF"
+            >
+              <FileDown className="w-4 h-4 text-amber-400" />
+              <span>Exportar Relatório PDF</span>
+            </button>
+
+            <button
+              onClick={() => onGeneratePlan('Moradias e Encostas', 'Nacional', currentZone.name)}
+              className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-amber-950/40 active:scale-95 whitespace-nowrap"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Gerar Protocolo Habitacional IA</span>
+            </button>
+          </div>
         </div>
       </div>
 
