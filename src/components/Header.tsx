@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
                   SIMA <span className="text-emerald-400 font-extrabold">El Niño Brasil</span>
                 </h1>
                 <span className="text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  v3.0 SAT+AI
+                  V1.0.0 SAT+AI
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 leading-tight">

@@ -35,8 +35,9 @@ import { SatelliteMissionModule } from './components/SatelliteMissionModule';
 import { ComprehensiveChartsModule } from './components/ComprehensiveChartsModule';
 import { LegalCenterModal, LegalTab } from './components/LegalCenterModal';
 import { AgeVerificationBanner } from './components/AgeVerificationBanner';
-import { ACTIVE_ALERTS, MACRO_SUMMARY, SIMA_SAT_TELEMETRY } from './data/mockElNinoData';
+import { ACTIVE_ALERTS, MACRO_SUMMARY, SIMA_SAT_TELEMETRY, REGIONS_DATA } from './data/mockElNinoData';
 import { SectorType, RegionId, Hotspot } from './types';
+import { motion } from 'motion/react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('all');
@@ -84,6 +85,16 @@ export default function App() {
   const handleHotspotSelect = (hotspot: Hotspot | null) => {
     setSelectedHotspot(hotspot);
   };
+
+  // Dynamic status evaluation for Main Page Status Cards
+  const currentRegionData = selectedRegion ? REGIONS_DATA[selectedRegion] : REGIONS_DATA['sul'];
+  const aviationStatus = currentRegionData?.aviationStatus.status || 'critico';
+  const housingStatus = currentRegionData?.housingStatus.status || 'critico';
+  const transportStatus = currentRegionData?.transportStatus.status || 'critico';
+
+  const isAviationCritical = aviationStatus === 'critico';
+  const isHousingCritical = housingStatus === 'critico';
+  const isTransportCritical = transportStatus === 'critico';
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
@@ -258,27 +269,97 @@ export default function App() {
 
             {/* 3 Pillar Strategic Cards */}
             <div className="space-y-4">
-              <div className="border-b border-slate-800 pb-2">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                  Pilares de Resiliência Setorial
-                </h2>
-                <p className="text-xs text-slate-400">
-                  Acesse as soluções de engenharia dedicadas a cada setor crítico nacional.
-                </p>
+              <div className="border-b border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                    Pilares de Resiliência Setorial
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Acesse as soluções de engenharia dedicadas a cada setor crítico nacional.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-slate-400">Contexto Regional Ativo:</span>
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-slate-200 border border-slate-700">
+                    {currentRegionData?.name || 'Brasil'}
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Pillar 1: Aviação */}
-                <div 
+                <motion.div 
+                  id="pillar-card-aviation"
                   onClick={() => setActiveTab('aviation')}
-                  className="bg-slate-900 border border-slate-800 hover:border-sky-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between"
+                  animate={
+                    isAviationCritical
+                      ? {
+                          borderColor: [
+                            'rgba(244, 63, 94, 0.45)',
+                            'rgba(239, 68, 68, 0.95)',
+                            'rgba(244, 63, 94, 0.45)'
+                          ],
+                          backgroundColor: [
+                            'rgba(15, 23, 42, 0.95)',
+                            'rgba(69, 10, 10, 0.4)',
+                            'rgba(15, 23, 42, 0.95)'
+                          ],
+                          boxShadow: [
+                            '0 0 0px rgba(244, 63, 94, 0.15)',
+                            '0 0 28px rgba(239, 68, 68, 0.4)',
+                            '0 0 0px rgba(244, 63, 94, 0.15)'
+                          ],
+                          scale: [1, 1.01, 1]
+                        }
+                      : {
+                          borderColor: 'rgba(30, 41, 59, 1)',
+                          backgroundColor: 'rgba(15, 23, 42, 1)',
+                          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.4)',
+                          scale: 1
+                        }
+                  }
+                  transition={
+                    isAviationCritical
+                      ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
+                      : { duration: 0.3 }
+                  }
+                  className="border hover:border-sky-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between relative overflow-hidden"
                 >
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-110 transition-transform">
-                      <Plane className="w-6 h-6" />
+                    <div className="flex items-center justify-between">
+                      <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-110 transition-transform">
+                        <Plane className="w-6 h-6" />
+                      </div>
+                      {isAviationCritical ? (
+                        <motion.span
+                          animate={{
+                            scale: [1, 1.06, 1],
+                            opacity: [0.85, 1, 0.85]
+                          }}
+                          transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                          className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/25 text-rose-200 border border-rose-500/60 flex items-center gap-1.5 shadow-sm"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                          ALERTA CRÍTICO
+                        </motion.span>
+                      ) : (
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                          aviationStatus === 'alto' 
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                            : 'bg-slate-800 text-slate-400 border-slate-700'
+                        }`}>
+                          Status: {aviationStatus.toUpperCase()}
+                        </span>
+                      )}
                     </div>
+
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">
                         Setor Aeronáutico
@@ -302,17 +383,78 @@ export default function App() {
                     <span>Acessar Módulo da Aviação</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Pillar 2: Moradias */}
-                <div 
+                <motion.div 
+                  id="pillar-card-housing"
                   onClick={() => setActiveTab('housing')}
-                  className="bg-slate-900 border border-slate-800 hover:border-amber-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between"
+                  animate={
+                    isHousingCritical
+                      ? {
+                          borderColor: [
+                            'rgba(244, 63, 94, 0.45)',
+                            'rgba(239, 68, 68, 0.95)',
+                            'rgba(244, 63, 94, 0.45)'
+                          ],
+                          backgroundColor: [
+                            'rgba(15, 23, 42, 0.95)',
+                            'rgba(69, 10, 10, 0.4)',
+                            'rgba(15, 23, 42, 0.95)'
+                          ],
+                          boxShadow: [
+                            '0 0 0px rgba(244, 63, 94, 0.15)',
+                            '0 0 28px rgba(239, 68, 68, 0.4)',
+                            '0 0 0px rgba(244, 63, 94, 0.15)'
+                          ],
+                          scale: [1, 1.01, 1]
+                        }
+                      : {
+                          borderColor: 'rgba(30, 41, 59, 1)',
+                          backgroundColor: 'rgba(15, 23, 42, 1)',
+                          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.4)',
+                          scale: 1
+                        }
+                  }
+                  transition={
+                    isHousingCritical
+                      ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
+                      : { duration: 0.3 }
+                  }
+                  className="border hover:border-amber-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between relative overflow-hidden"
                 >
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
-                      <Home className="w-6 h-6" />
+                    <div className="flex items-center justify-between">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                        <Home className="w-6 h-6" />
+                      </div>
+                      {isHousingCritical ? (
+                        <motion.span
+                          animate={{
+                            scale: [1, 1.06, 1],
+                            opacity: [0.85, 1, 0.85]
+                          }}
+                          transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                          className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/25 text-rose-200 border border-rose-500/60 flex items-center gap-1.5 shadow-sm"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                          ALERTA CRÍTICO
+                        </motion.span>
+                      ) : (
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                          housingStatus === 'alto' 
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                            : 'bg-slate-800 text-slate-400 border-slate-700'
+                        }`}>
+                          Status: {housingStatus.toUpperCase()}
+                        </span>
+                      )}
                     </div>
+
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
                         Setor Habitacional
@@ -336,17 +478,80 @@ export default function App() {
                     <span>Acessar Módulo de Moradias</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Pillar 3: Transporte */}
-                <div 
+                <motion.div 
+                  id="pillar-card-transport"
                   onClick={() => setActiveTab('transport')}
-                  className="bg-slate-900 border border-slate-800 hover:border-emerald-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between"
+                  animate={
+                    isTransportCritical
+                      ? {
+                          borderColor: [
+                            'rgba(244, 63, 94, 0.45)',
+                            'rgba(239, 68, 68, 0.95)',
+                            'rgba(244, 63, 94, 0.45)'
+                          ],
+                          backgroundColor: [
+                            'rgba(15, 23, 42, 0.95)',
+                            'rgba(69, 10, 10, 0.4)',
+                            'rgba(15, 23, 42, 0.95)'
+                          ],
+                          boxShadow: [
+                            '0 0 0px rgba(244, 63, 94, 0.15)',
+                            '0 0 28px rgba(239, 68, 68, 0.4)',
+                            '0 0 0px rgba(244, 63, 94, 0.15)'
+                          ],
+                          scale: [1, 1.01, 1]
+                        }
+                      : {
+                          borderColor: 'rgba(30, 41, 59, 1)',
+                          backgroundColor: 'rgba(15, 23, 42, 1)',
+                          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.4)',
+                          scale: 1
+                        }
+                  }
+                  transition={
+                    isTransportCritical
+                      ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
+                      : { duration: 0.3 }
+                  }
+                  className="border hover:border-emerald-500/60 rounded-3xl p-6 shadow-xl transition-all group cursor-pointer flex flex-col justify-between relative overflow-hidden"
                 >
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
-                      <Truck className="w-6 h-6" />
+                    <div className="flex items-center justify-between">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                        <Truck className="w-6 h-6" />
+                      </div>
+                      {isTransportCritical ? (
+                        <motion.span
+                          animate={{
+                            scale: [1, 1.06, 1],
+                            opacity: [0.85, 1, 0.85]
+                          }}
+                          transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                          className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/25 text-rose-200 border border-rose-500/60 flex items-center gap-1.5 shadow-sm"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                          ALERTA CRÍTICO
+                        </motion.span>
+                      ) : (
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                          transportStatus === 'alto' 
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                            : transportStatus === 'moderado'
+                            ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40'
+                            : 'bg-slate-800 text-slate-400 border-slate-700'
+                        }`}>
+                          Status: {transportStatus.toUpperCase()}
+                        </span>
+                      )}
                     </div>
+
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
                         Setor Logístico
@@ -370,7 +575,7 @@ export default function App() {
                     <span>Acessar Módulo de Transporte</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </motion.div>
 
               </div>
             </div>

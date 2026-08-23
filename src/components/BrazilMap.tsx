@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { 
   Hotspot, 
   RegionId, 
@@ -321,12 +322,63 @@ export const BrazilMap: React.FC<BrazilMapProps> = ({
         
         {/* Hotspot Selected Detail */}
         {selectedHotspot ? (
-          <div className="bg-slate-900/95 border border-slate-800 rounded-2xl p-5 shadow-xl backdrop-blur-sm">
+          <motion.div 
+            id="hotspot-detail-panel"
+            animate={
+              selectedHotspot.riskLevel === 'critico'
+                ? {
+                    borderColor: [
+                      'rgba(244, 63, 94, 0.45)',
+                      'rgba(239, 68, 68, 0.95)',
+                      'rgba(244, 63, 94, 0.45)'
+                    ],
+                    backgroundColor: [
+                      'rgba(15, 23, 42, 0.95)',
+                      'rgba(69, 10, 10, 0.4)',
+                      'rgba(15, 23, 42, 0.95)'
+                    ],
+                    boxShadow: [
+                      '0 0 0px rgba(244, 63, 94, 0.15)',
+                      '0 0 28px rgba(239, 68, 68, 0.4)',
+                      '0 0 0px rgba(244, 63, 94, 0.15)'
+                    ]
+                  }
+                : {
+                    borderColor: 'rgba(30, 41, 59, 1)',
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
+                  }
+            }
+            transition={
+              selectedHotspot.riskLevel === 'critico'
+                ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
+                : { duration: 0.3 }
+            }
+            className="border rounded-2xl p-5 shadow-xl backdrop-blur-sm relative overflow-hidden"
+          >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className={`text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full border ${getRiskColor(selectedHotspot.riskLevel)}`}>
-                  {selectedHotspot.riskLevel} • {selectedHotspot.civilDefenseLevel}
-                </span>
+                {selectedHotspot.riskLevel === 'critico' ? (
+                  <motion.span 
+                    animate={{
+                      scale: [1, 1.06, 1],
+                      opacity: [0.9, 1, 0.9]
+                    }}
+                    transition={{
+                      duration: 1.8,
+                      repeat: Infinity,
+                      ease: 'easeInOut'
+                    }}
+                    className="text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full border bg-rose-500/25 text-rose-200 border-rose-500/60 inline-flex items-center gap-1.5 shadow-sm"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                    {selectedHotspot.riskLevel} • {selectedHotspot.civilDefenseLevel}
+                  </motion.span>
+                ) : (
+                  <span className={`text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full border ${getRiskColor(selectedHotspot.riskLevel)}`}>
+                    {selectedHotspot.riskLevel} • {selectedHotspot.civilDefenseLevel}
+                  </span>
+                )}
                 <h3 className="text-base font-bold text-white mt-2">
                   {selectedHotspot.name}
                 </h3>
@@ -446,7 +498,7 @@ export const BrazilMap: React.FC<BrazilMapProps> = ({
               </button>
             </div>
 
-          </div>
+          </motion.div>
         ) : selectedRegion ? (
           /* Regional Summary Card */
           (() => {
@@ -471,54 +523,216 @@ export const BrazilMap: React.FC<BrazilMapProps> = ({
                   <p className="text-xs text-slate-300 leading-relaxed">{reg.elNinoPattern}</p>
                 </div>
 
-                {/* Sector Status Cards */}
+                {/* Sector Status Cards with Framer-Motion Pulsing when Critical */}
                 <div className="space-y-2.5">
-                  <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800">
+                  {/* Aviation Status Card */}
+                  <motion.div 
+                    id="map-status-aviation"
+                    animate={
+                      reg.aviationStatus.status === 'critico'
+                        ? {
+                            borderColor: [
+                              'rgba(244, 63, 94, 0.4)',
+                              'rgba(239, 68, 68, 0.95)',
+                              'rgba(244, 63, 94, 0.4)'
+                            ],
+                            backgroundColor: [
+                              'rgba(15, 23, 42, 0.7)',
+                              'rgba(69, 10, 10, 0.35)',
+                              'rgba(15, 23, 42, 0.7)'
+                            ],
+                            boxShadow: [
+                              '0 0 0px rgba(244, 63, 94, 0.1)',
+                              '0 0 16px rgba(239, 68, 68, 0.35)',
+                              '0 0 0px rgba(244, 63, 94, 0.1)'
+                            ],
+                            scale: [1, 1.01, 1]
+                          }
+                        : {
+                            borderColor: 'rgba(30, 41, 59, 1)',
+                            backgroundColor: 'rgba(2, 6, 23, 0.5)',
+                            boxShadow: 'none',
+                            scale: 1
+                          }
+                    }
+                    transition={
+                      reg.aviationStatus.status === 'critico'
+                        ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
+                        : { duration: 0.3 }
+                    }
+                    className="p-3 rounded-xl border relative overflow-hidden"
+                  >
                     <div className="flex items-center justify-between text-xs font-bold text-sky-300 mb-1">
                       <span className="flex items-center gap-1.5">
                         <Plane className="w-3.5 h-3.5" /> Aviação Regional
                       </span>
-                      <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${getRiskColor(reg.aviationStatus.status)}`}>
-                        {reg.aviationStatus.status}
-                      </span>
+                      {reg.aviationStatus.status === 'critico' ? (
+                        <motion.span 
+                          animate={{
+                            scale: [1, 1.08, 1],
+                            opacity: [0.85, 1, 0.85]
+                          }}
+                          transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                          className="text-[10px] uppercase px-2 py-0.5 rounded border bg-rose-500/25 text-rose-200 border-rose-500/60 font-black flex items-center gap-1 shadow-sm"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                          CRÍTICO
+                        </motion.span>
+                      ) : (
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${getRiskColor(reg.aviationStatus.status)}`}>
+                          {reg.aviationStatus.status}
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-slate-300">{reg.aviationStatus.impactSummary}</p>
                     <div className="mt-2 text-[11px] text-slate-400 flex items-center justify-between">
                       <span>{reg.aviationStatus.monitoredAirports} aeroportos monitorados</span>
                       <span>Probabilidade de atraso: <strong className="text-sky-300">{reg.aviationStatus.delayProbability}%</strong></span>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800">
+                  {/* Housing Status Card */}
+                  <motion.div 
+                    id="map-status-housing"
+                    animate={
+                      reg.housingStatus.status === 'critico'
+                        ? {
+                            borderColor: [
+                              'rgba(244, 63, 94, 0.4)',
+                              'rgba(239, 68, 68, 0.95)',
+                              'rgba(244, 63, 94, 0.4)'
+                            ],
+                            backgroundColor: [
+                              'rgba(15, 23, 42, 0.7)',
+                              'rgba(69, 10, 10, 0.35)',
+                              'rgba(15, 23, 42, 0.7)'
+                            ],
+                            boxShadow: [
+                              '0 0 0px rgba(244, 63, 94, 0.1)',
+                              '0 0 16px rgba(239, 68, 68, 0.35)',
+                              '0 0 0px rgba(244, 63, 94, 0.1)'
+                            ],
+                            scale: [1, 1.01, 1]
+                          }
+                        : {
+                            borderColor: 'rgba(30, 41, 59, 1)',
+                            backgroundColor: 'rgba(2, 6, 23, 0.5)',
+                            boxShadow: 'none',
+                            scale: 1
+                          }
+                    }
+                    transition={
+                      reg.housingStatus.status === 'critico'
+                        ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
+                        : { duration: 0.3 }
+                    }
+                    className="p-3 rounded-xl border relative overflow-hidden"
+                  >
                     <div className="flex items-center justify-between text-xs font-bold text-amber-300 mb-1">
                       <span className="flex items-center gap-1.5">
                         <Home className="w-3.5 h-3.5" /> Moradias & Encostas
                       </span>
-                      <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${getRiskColor(reg.housingStatus.status)}`}>
-                        {reg.housingStatus.status}
-                      </span>
+                      {reg.housingStatus.status === 'critico' ? (
+                        <motion.span 
+                          animate={{
+                            scale: [1, 1.08, 1],
+                            opacity: [0.85, 1, 0.85]
+                          }}
+                          transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                          className="text-[10px] uppercase px-2 py-0.5 rounded border bg-rose-500/25 text-rose-200 border-rose-500/60 font-black flex items-center gap-1 shadow-sm"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                          CRÍTICO
+                        </motion.span>
+                      ) : (
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${getRiskColor(reg.housingStatus.status)}`}>
+                          {reg.housingStatus.status}
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-slate-300">{reg.housingStatus.impactSummary}</p>
                     <div className="mt-2 text-[11px] text-slate-400 flex items-center justify-between">
                       <span>{reg.housingStatus.slopesMonitored} encostas monitoradas</span>
                       <span>Famílias em risco: <strong className="text-amber-300">{reg.housingStatus.familiesInRiskZones.toLocaleString()}</strong></span>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800">
+                  {/* Transport Status Card */}
+                  <motion.div 
+                    id="map-status-transport"
+                    animate={
+                      reg.transportStatus.status === 'critico'
+                        ? {
+                            borderColor: [
+                              'rgba(244, 63, 94, 0.4)',
+                              'rgba(239, 68, 68, 0.95)',
+                              'rgba(244, 63, 94, 0.4)'
+                            ],
+                            backgroundColor: [
+                              'rgba(15, 23, 42, 0.7)',
+                              'rgba(69, 10, 10, 0.35)',
+                              'rgba(15, 23, 42, 0.7)'
+                            ],
+                            boxShadow: [
+                              '0 0 0px rgba(244, 63, 94, 0.1)',
+                              '0 0 16px rgba(239, 68, 68, 0.35)',
+                              '0 0 0px rgba(244, 63, 94, 0.1)'
+                            ],
+                            scale: [1, 1.01, 1]
+                          }
+                        : {
+                            borderColor: 'rgba(30, 41, 59, 1)',
+                            backgroundColor: 'rgba(2, 6, 23, 0.5)',
+                            boxShadow: 'none',
+                            scale: 1
+                          }
+                    }
+                    transition={
+                      reg.transportStatus.status === 'critico'
+                        ? { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
+                        : { duration: 0.3 }
+                    }
+                    className="p-3 rounded-xl border relative overflow-hidden"
+                  >
                     <div className="flex items-center justify-between text-xs font-bold text-emerald-300 mb-1">
                       <span className="flex items-center gap-1.5">
                         <Truck className="w-3.5 h-3.5" /> Transporte & Vias
                       </span>
-                      <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${getRiskColor(reg.transportStatus.status)}`}>
-                        {reg.transportStatus.status}
-                      </span>
+                      {reg.transportStatus.status === 'critico' ? (
+                        <motion.span 
+                          animate={{
+                            scale: [1, 1.08, 1],
+                            opacity: [0.85, 1, 0.85]
+                          }}
+                          transition={{
+                            duration: 1.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut'
+                          }}
+                          className="text-[10px] uppercase px-2 py-0.5 rounded border bg-rose-500/25 text-rose-200 border-rose-500/60 font-black flex items-center gap-1 shadow-sm"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                          CRÍTICO
+                        </motion.span>
+                      ) : (
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${getRiskColor(reg.transportStatus.status)}`}>
+                          {reg.transportStatus.status}
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-slate-300">{reg.transportStatus.impactSummary}</p>
                     <div className="mt-2 text-[11px] text-slate-400">
                       <span>{reg.transportStatus.criticalHighwaysKm} km de rodovias críticas sob alerta</span>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
 
                 <button
