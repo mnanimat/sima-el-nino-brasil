@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plane, 
   Home, 
@@ -15,7 +15,11 @@ import {
   BarChart3,
   Bot,
   Satellite,
-  Orbit
+  Orbit,
+  Scale,
+  Lock,
+  UserCheck,
+  Code2
 } from 'lucide-react';
 import { Header } from './components/Header';
 import { BrazilMap } from './components/BrazilMap';
@@ -29,6 +33,8 @@ import { AlertsManager } from './components/AlertsManager';
 import { TacticalAdvisorChat } from './components/TacticalAdvisorChat';
 import { SatelliteMissionModule } from './components/SatelliteMissionModule';
 import { ComprehensiveChartsModule } from './components/ComprehensiveChartsModule';
+import { LegalCenterModal, LegalTab } from './components/LegalCenterModal';
+import { AgeVerificationBanner } from './components/AgeVerificationBanner';
 import { ACTIVE_ALERTS, MACRO_SUMMARY, SIMA_SAT_TELEMETRY } from './data/mockElNinoData';
 import { SectorType, RegionId, Hotspot } from './types';
 
@@ -37,6 +43,31 @@ export default function App() {
   const [selectedRegion, setSelectedRegion] = useState<RegionId | null>('sul');
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Legal Center & Age Verification State
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
+  const [legalModalTab, setLegalModalTab] = useState<LegalTab>('terms');
+  const [isAgeVerified, setIsAgeVerified] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('sima_age_verified') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleConfirmAge = () => {
+    setIsAgeVerified(true);
+    try {
+      localStorage.setItem('sima_age_verified', 'true');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleOpenLegalModal = (tab: LegalTab = 'terms') => {
+    setLegalModalTab(tab);
+    setIsLegalModalOpen(true);
+  };
 
   // Pre-fill state for PLANCON generator when triggered from other tabs
   const [planconConfig, setPlanconConfig] = useState({
@@ -62,6 +93,15 @@ export default function App() {
         onTabChange={setActiveTab}
         activeAlertCount={ACTIVE_ALERTS.length}
         onOpenChat={() => setIsChatOpen(true)}
+        onOpenLegalCenter={handleOpenLegalModal}
+        isAgeVerified={isAgeVerified}
+      />
+
+      {/* Age Verification & Legal Notice Banner */}
+      <AgeVerificationBanner
+        isAgeVerified={isAgeVerified}
+        onConfirmAge={handleConfirmAge}
+        onOpenLegalCenter={handleOpenLegalModal}
       />
 
       {/* Main Content Area */}
@@ -395,16 +435,121 @@ export default function App() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Satellite className="w-4 h-4 text-cyan-400" />
-            <strong>SIMA El Niño Brasil</strong> — Sistema Integrado de Mitigação & Resiliência
+      {/* Legal Center & Compliance Modal */}
+      <LegalCenterModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        initialTab={legalModalTab}
+        isAgeVerified={isAgeVerified}
+        onConfirmAge={handleConfirmAge}
+      />
+
+      {/* Footer with Comprehensive Legal, Compliance and Developer Credits */}
+      <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-8 text-xs text-slate-400">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          
+          {/* Main Footer Row */}
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <Satellite className="w-4 h-4 text-cyan-400" />
+              </div>
+              <div>
+                <div className="flex items-center justify-center sm:justify-start gap-2">
+                  <strong className="text-white font-bold">SIMA El Niño Brasil</strong>
+                  <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.2 rounded border border-slate-700">
+                    Open Source MIT
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Sistema Integrado de Mitigação, Alerta Antecipado e Resiliência (Aviação, Moradias e Transporte)
+                </p>
+              </div>
+            </div>
+
+            {/* Developer Credits Highlight */}
+            <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3 text-xs text-slate-300">
+              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-400">
+                  Engenharia & Autoria
+                </div>
+                <div className="font-semibold text-white">
+                  Desenvolvedor: <span className="text-slate-100 font-bold">Micael Nildo Oliveira Souza</span>
+                </div>
+                <div className="text-[10px] text-slate-400 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-cyan-400 inline" />
+                  <span>Com auxílio de inteligência artificial</span>
+                </div>
+              </div>
+              <button
+                onClick={() => handleOpenLegalModal('developer')}
+                className="ml-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium border border-slate-700 transition-colors"
+              >
+                Detalhes
+              </button>
+            </div>
           </div>
-          <div className="text-[11px] text-slate-400">
-            DECEA • ANAC • CEMADEN • DEFESA CIVIL • DNIT • INPE • MINISTÉRIO DOS TRANSPORTES
+
+          {/* Legal Navigation Links & Disclaimers */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2">
+              <button
+                onClick={() => handleOpenLegalModal('terms')}
+                className="hover:text-emerald-400 transition-colors flex items-center gap-1"
+              >
+                <FileText className="w-3.5 h-3.5 text-slate-400" />
+                <span>Termos de Uso</span>
+              </button>
+              
+              <button
+                onClick={() => handleOpenLegalModal('privacy')}
+                className="hover:text-sky-400 transition-colors flex items-center gap-1"
+              >
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <span>Política de Privacidade (LGPD)</span>
+              </button>
+
+              <button
+                onClick={() => handleOpenLegalModal('age')}
+                className="hover:text-amber-400 transition-colors flex items-center gap-1"
+              >
+                <UserCheck className="w-3.5 h-3.5 text-slate-400" />
+                <span>Verificação de Idade (18+)</span>
+                <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
+                  isAgeVerified 
+                    ? 'bg-emerald-500/20 text-emerald-300' 
+                    : 'bg-amber-500/20 text-amber-300'
+                }`}>
+                  {isAgeVerified ? 'Verificado' : 'Pendente'}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleOpenLegalModal('license')}
+                className="hover:text-cyan-400 transition-colors flex items-center gap-1"
+              >
+                <Scale className="w-3.5 h-3.5 text-slate-400" />
+                <span>Licença MIT (EN / PT-BR)</span>
+              </button>
+            </div>
+
+            <div className="text-slate-500 text-center sm:text-right">
+              DECEA • ANAC • CEMADEN • DEFESA CIVIL • DNIT • INPE • CPRM
+            </div>
           </div>
+
+          <div className="text-[10px] text-slate-500 text-center pt-2 space-y-1">
+            <div>
+              <span className="text-amber-400/90 font-medium">Ambiente Demonstrativo:</span> Protótipo de engenharia com dados e cenários matematicamente simulados para testes, treinamento e planejamento tático.
+            </div>
+            <div className="text-slate-600">
+              © 2026 Micael Nildo Oliveira Souza. Licenciado sob os termos da Licença de Código Aberto MIT. Todos os direitos reservados.
+            </div>
+          </div>
+
         </div>
       </footer>
     </div>

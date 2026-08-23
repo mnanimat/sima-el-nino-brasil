@@ -16,7 +16,9 @@ import {
   BellRing,
   Bot,
   Layers,
-  Globe
+  Globe,
+  Scale,
+  UserCheck
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -24,6 +26,8 @@ interface HeaderProps {
   onTabChange: (tab: string) => void;
   activeAlertCount?: number;
   onOpenChat?: () => void;
+  onOpenLegalCenter?: (tab?: 'terms' | 'privacy' | 'age' | 'license' | 'developer') => void;
+  isAgeVerified?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -31,6 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   activeAlertCount = 4,
   onOpenChat,
+  onOpenLegalCenter,
+  isAgeVerified = false,
 }) => {
   const navTabs = [
     { id: 'all', label: 'Painel Geral', icon: <Activity className="w-3.5 h-3.5 text-cyan-400" /> },
@@ -54,26 +60,37 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-slate-900 border-b border-slate-800 text-slate-100 sticky top-0 z-40 shadow-xl">
       {/* Top Banner: Real-time Context */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2.5 pb-2 flex flex-wrap items-center justify-between gap-3 text-xs border-b border-slate-800/80">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-1.5 flex flex-wrap items-center justify-between gap-2 text-xs border-b border-slate-800/80">
         <div className="flex items-center gap-2">
           <span className="flex h-2 w-2 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <span className="font-semibold tracking-wide text-amber-300">SISTEMA INTEGRADO DE RESILIÊNCIA AO EL NIÑO</span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-400 hidden sm:inline">Defesa Civil • ANAC/DECEA • DNIT • CEMADEN • INPE • CPRM</span>
+          <span className="text-slate-600 hidden sm:inline">|</span>
+          <span className="text-slate-400 hidden lg:inline">Defesa Civil • ANAC/DECEA • DNIT • CEMADEN • INPE • CPRM</span>
         </div>
 
-        <div className="flex items-center gap-3 text-slate-300">
-          <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px]">
-            <Satellite className="w-3 h-3 text-cyan-400 animate-pulse" />
-            <span>SIMA-SAT 1: <strong className="text-cyan-300 font-medium">Órbita 1.420 • Downlink Ativo</strong></span>
-          </div>
-          <div className="hidden md:flex items-center gap-1.5 text-slate-400 text-[11px]">
-            <Radio className="w-3 h-3 text-emerald-400" />
-            <span>Telemetria em Tempo Real</span>
-          </div>
+        <div className="flex items-center gap-2.5 text-slate-300">
+            <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              <span className="text-slate-400">Ambiente: <strong className="text-amber-300 font-medium">Demonstrativo (Dados Simulados)</strong></span>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px]">
+              <Satellite className="w-3 h-3 text-cyan-400 animate-pulse" />
+              <span>SIMA-SAT 1: <strong className="text-cyan-300 font-medium">Órbita 1.420</strong></span>
+            </div>
+
+          {onOpenLegalCenter && (
+            <button
+              onClick={() => onOpenLegalCenter('terms')}
+              className="flex items-center gap-1 bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white px-2.5 py-0.5 rounded-full border border-slate-800 text-[11px] transition-colors"
+            >
+              <Scale className="w-3 h-3 text-emerald-400" />
+              <span>Termos & Licença MIT</span>
+            </button>
+          )}
         </div>
       </div>
 
