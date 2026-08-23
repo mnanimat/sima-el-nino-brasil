@@ -546,7 +546,7 @@ export default function App() {
               <span className="text-amber-400/90 font-medium">Ambiente Demonstrativo:</span> Protótipo de engenharia com dados e cenários matematicamente simulados para testes, treinamento e planejamento tático.
             </div>
             <div className="text-slate-600">
-              © 2026 Micael Nildo Oliveira Souza. Licenciado sob os termos da Licença de Código Aberto MIT. Todos os direitos reservados.
+              © 2026 Micael Nildo Oliveira Souza. Licenciado sob os termos da Licença de Código Aberto MIT.
             </div>
           </div>
 
