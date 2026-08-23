@@ -686,7 +686,7 @@ FORA DE OU EM CONEXÃO COM O SOFTWARE OU O USO OU OUTRAS NEGOCIAÇÕES NO SOFTWA
               className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-emerald-300 text-xs font-bold transition-all border border-slate-700 flex items-center gap-1.5"
             >
               <Mail className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Fale Conosco</span>
+              <span>Contato</span>
             </button>
             <button
               onClick={onClose}
