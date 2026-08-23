@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="satGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0e7490"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.8"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Container with rounded squircle -->
+  <rect width="64" height="64" rx="14" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Radar Concentric Waves -->
+  <path d="M 18 42 A 20 20 0 0 1 46 42" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.4"/>
+  <path d="M 23 42 A 13 13 0 0 1 41 42" fill="none" stroke="#38bdf8" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 28 42 A 6 6 0 0 1 36 42" fill="none" stroke="#38bdf8" stroke-width="1.75" opacity="0.9"/>
+
+  <!-- Satellite Body & Solar Panels (SIMA-SAT 1) -->
+  <!-- Left Solar Panel -->
+  <rect x="12" y="16" width="10" height="7" rx="1.5" fill="url(#panelGrad)" stroke="#38bdf8" stroke-width="1"/>
+  <line x1="17" y1="16" x2="17" y2="23" stroke="#082f49" stroke-width="0.75"/>
+  <line x1="22" y1="19.5" x2="26" y2="19.5" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Satellite Central Bus -->
+  <rect x="26" y="15" width="12" height="9" rx="2" fill="url(#satGrad)" stroke="#bae6fd" stroke-width="1" filter="url(#glow)"/>
+  
+  <!-- Right Solar Panel -->
+  <line x1="38" y1="19.5" x2="42" y2="19.5" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="42" y="16" width="10" height="7" rx="1.5" fill="url(#panelGrad)" stroke="#38bdf8" stroke-width="1"/>
+  <line x1="47" y1="16" x2="47" y2="23" stroke="#082f49" stroke-width="0.75"/>
+
+  <!-- Radar Dish / SAR Emitter -->
+  <path d="M 28 24 Q 32 28 36 24" fill="none" stroke="#f1f5f9" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="32" cy="27" r="1.5" fill="#f59e0b" filter="url(#glow)"/>
+
+  <!-- Pulse / Beam Ray -->
+  <polygon points="32,28 27,45 37,45" fill="url(#pulseGrad)" opacity="0.25"/>
+
+  <!-- Earth Arc / Shield Base representing Resilience -->
+  <path d="M 14 52 Q 32 44 50 52 L 48 56 Q 32 49 16 56 Z" fill="url(#shieldGrad)" opacity="0.95"/>
+
+  <!-- Center Active Sensor Node -->
+  <circle cx="32" cy="47" r="2" fill="#10b981" stroke="#ecfdf5" stroke-width="1" filter="url(#glow)"/>
+</svg>
